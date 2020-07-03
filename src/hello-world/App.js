@@ -19,8 +19,8 @@ const Blurb = ({ name }) => (
     <p>It's a great time to be alive!</p>
     <p>...in Canada at least.</p>
     <p>
-      I'm so lucky I'm living with my family at this time, and I hope I'm not
-      disturbing them too much.
+      I'm so lucky to have a great and supportive family at this time! Hope I'm
+      not disturbing them too much.
     </p>
   </div>
 );
