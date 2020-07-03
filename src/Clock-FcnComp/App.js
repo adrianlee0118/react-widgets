@@ -11,9 +11,8 @@ const App = () => (
 //Use React hooks useState to simulate state, and useEffect to simulate didMount lifecycle methods in a function component
 const Clock = () => {
   const [time, setTime] = useState(new Date());
-
+  const tick = () => setTime(new Date());
   useEffect(() => {
-    const tick = () => setTime(new Date());
     setInterval(tick, 1000);
   });
 
