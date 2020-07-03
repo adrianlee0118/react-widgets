@@ -17,7 +17,7 @@ const Counter = () => {
       <h1>Counter</h1>
       <div>
         <FcnBtn fcn={() => setCount(count + 1)} text="+" />
-        <h3>{count}</h3>
+        <p>{count}</p>
         <FcnBtn fcn={() => setCount(count - 1)} text="-" />
       </div>
       <br />

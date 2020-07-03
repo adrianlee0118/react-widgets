@@ -16,18 +16,16 @@ const Counter = () => {
     <div>
       <h1>Counter</h1>
       <div>
-        <FcnBtn fcn={() => setCount(count + 1)} text="+" />
-        <h3>{count}</h3>
-        <FcnBtn fcn={() => setCount(count - 1)} text="-" />
+        <button onClick={() => setCount(count + 1)}>+</button>
+        <p>{count}</p>
+        <button onClick={() => setCount(count - 1)}>-</button>
       </div>
       <br />
       <div>
-        <FcnBtn fcn={() => setCount(0)} text="Reset" />
+        <button onClick={() => setCount(0)}>Reset</button>
       </div>
     </div>
   );
 };
-
-const FcnBtn = ({ fcn, text }) => <button onClick={fcn}>{text}</button>;
 
 export default App;
