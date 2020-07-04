@@ -1,5 +1,6 @@
 import React, { error } from "react";
 import axios from "axios";
+import ContentLoader from "react-content-loader";
 import "./App.css";
 
 const API = "https://hn.algolia.com/api/v1/search?query=";
@@ -45,7 +46,7 @@ class APIList extends React.Component {
   render() {
     const { hits, isLoading } = this.state;
     if (error) return <p>{error.message}</p>; //Conditional render statements if there is an error or if still loading
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <ContentLoader />;
     return (
       <ul>
         {hits.map((hit) => (
