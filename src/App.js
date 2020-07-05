@@ -1,71 +1,26 @@
-import React, { error } from "react";
-import ContentLoader from "react-content-loader";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-
-const API = "https://hn.algolia.com/api/v1/search?query=";
-const DEFAULT_QUERY = "redux";
 
 const App = () => (
   <div>
-    <APIList />
+    <Clock />
   </div>
 );
 
-class APIList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hits: [],
-      isLoading: false,
-      error: null,
-    };
-  }
+//Notes:
+//Use React hooks useState to simulate state, and useEffect to simulate didMount lifecycle methods in a function component
+const Clock = () => {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    setInterval(() => setTime(new Date()), 1000);
+  }, [time]);
 
-  //Using async/await instead of .then() in the componentDidMount method to fetch data asynchronously using axios
-  async componentDidMount() {
-    this.setState({ isLoading: true });
-    try {
-      const result = await axios.get(API + DEFAULT_QUERY); //asynchronously fetch data; await keyword makes it so that next line does not execute bfore await request resolves
-      this.setState({
-        hits: result.data.hits, //return data in json format from axios as before
-        isLoading: false,
-      });
-    } catch (error) {
-      //catch all errors using axios as before including request fail
-      this.setState({
-        error,
-        isLoading: false,
-      });
-    }
-  }
-  /*        //same code without async/await
-  componentDidMount() {
-    axios
-      .get(API + DEFAULT_QUERY)
-      .then((result) =>
-        this.setState({
-          hits: result.data.hits,
-          isLoading: false,
-        })
-      )
-      .catch((error) => this.setState({ error, isLoading: false }));
-  }*/
-
-  render() {
-    const { hits, isLoading } = this.state;
-    if (error) return <p>{error.message}</p>; //Conditional render statements if there is an error or if still loading
-    if (isLoading) return <ContentLoader />;
-    return (
-      <ul>
-        {hits.map((hit) => (
-          <li key={hit.objectID}>
-            <a href={hit.url}>{hit.title}</a>
-          </li>
-        ))}
-      </ul>
-    );
-  }
-}
+  return (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {time.toLocaleTimeString()}.</h2>
+    </div>
+  );
+};
 
 export default App;
