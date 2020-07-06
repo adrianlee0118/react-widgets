@@ -16,7 +16,7 @@ const Stopwatch = () => {
       interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
     }
     return () => clearInterval(interval);
-  }, [isOn]);
+  }, [isOn]); //Only re-render if isOn changes
 
   const onReset = () => {
     setIsOn(false);
