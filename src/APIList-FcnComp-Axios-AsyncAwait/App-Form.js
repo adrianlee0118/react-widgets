@@ -1,4 +1,4 @@
-//Turning APIList-FcnComp-Axios-AsyncAwait API retrieval logic into a custom hook
+//Use a form + submit button combo in contrast to a native input/button--looks the same as input/button combo but allows for query submissions by the enter key in addition to the button
 
 import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
@@ -10,10 +10,13 @@ const App = () => (
   </div>
 );
 
-//custom hook, url and data format generalized based on inputs
-const useDataAPI = (initialUrl, initialData) => {
-  const [data, setData] = useState(initialData);
-  const [url, setUrl] = useState(initialUrl);
+const APISearchList = () => {
+  const [data, setData] = useState({ hits: [] });
+  const [query, setQuery] = useState("redux"); //value of search field
+  const [url, setUrl] = useState(
+    //url obtained from query value in search field
+    "https://hn.algolia.com/api/v1/search?query=redux"
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -32,25 +35,13 @@ const useDataAPI = (initialUrl, initialData) => {
       setIsLoading(false);
     };
     fetchData();
-  }, [url]); //re-render occurs only when url changes, which is the function passed to the class or component using the hook
-
-  return [{ data, isLoading, isError }, setUrl]; //return a state and a function to set the variable that
-};
-
-const APISearchList = () => {
-  const [query, setQuery] = useState("redux"); //value of search field
-  const [{ data, isLoading, isError }, doFetch] = useDataAPI(
-    "https://hn.algolia.com/api/v1/search?query=redux",
-    {
-      hits: [],
-    }
-  );
+  }, [url]); //re-render occurs only when url changes
 
   return (
     <Fragment>
       <form
         onSubmit={(event) => {
-          doFetch(`https://hn.algolia.com/api/v1/search?query=${query}`);
+          setUrl(`https://hn.algolia.com/api/v1/search?query=${query}`);
           event.preventDefault(); //prevents submit from triggering a browser reload every time
         }}
       >

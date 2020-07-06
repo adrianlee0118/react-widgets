@@ -10,10 +10,13 @@ const App = () => (
   </div>
 );
 
-//custom hook, url and data format generalized based on inputs
-const useDataAPI = (initialUrl, initialData) => {
-  const [data, setData] = useState(initialData);
-  const [url, setUrl] = useState(initialUrl);
+//custom hook
+const useHackerNewsAPI = () => {
+  const [data, setData] = useState({ hits: [] });
+  const [url, setUrl] = useState(
+    //url obtained from query value in search field
+    "https://hn.algolia.com/api/v1/search?query=redux"
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -39,12 +42,7 @@ const useDataAPI = (initialUrl, initialData) => {
 
 const APISearchList = () => {
   const [query, setQuery] = useState("redux"); //value of search field
-  const [{ data, isLoading, isError }, doFetch] = useDataAPI(
-    "https://hn.algolia.com/api/v1/search?query=redux",
-    {
-      hits: [],
-    }
-  );
+  const [{ data, isLoading, isError }, doFetch] = useHackerNewsAPI();
 
   return (
     <Fragment>
