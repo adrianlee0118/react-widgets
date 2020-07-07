@@ -35,7 +35,7 @@ const stopwatchReducer = (state, action) => {
 };
 
 const Stopwatch = () => {
-  /*
+  /*  //ison and timer logic bundled into the reducer so that we can't have impossible states
   const [isOn, setIsOn] = useState(false);
   const [timer, setTimer] = useState(0);
   */
