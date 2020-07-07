@@ -11,7 +11,6 @@ const App = () => (
 );
 
 //Reducer function: a state goes in, actions in combination with old state return a new state
-//In contrast to the hook without using useReducer, state variables become bundled such that impossible combinations of state can not occur
 const dataFetchReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_INIT": //spread operator with new variable sets cause state merge
