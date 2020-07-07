@@ -12,9 +12,10 @@ const App = () => (
 
 //Reducer function: a state goes in, actions in combination with old state return a new state
 //In contrast to the hook without using useReducer, state variables become bundled such that impossible combinations of state can not occur
+//basically, the original useState with a variable and setter for each property becomes combined into a useState for a group of properties with a single setter
 const dataFetchReducer = (state, action) => {
   switch (action.type) {
-    case "FETCH_INIT": //spread operator with new variable sets cause state merge
+    case "FETCH_INIT":
       return { ...state, isLoading: true, isError: false };
     case "FETCH_SUCCESS":
       return {
@@ -39,29 +40,23 @@ const useDataAPI = (initialUrl, initialData) => {
     isLoading: false,
     isError: false,
     data: initialData,
-  });
+  }); //second argument of useReducer is the initialstate!
 
   useEffect(() => {
     const fetchData = async () => {
-      /*  all 'set'ing now happens in reducer, which we communicate with using dispatch
-      setIsError(false);
-      setIsLoading(true);*/
       dispatch({ type: "FETCH_INIT" });
 
       try {
         const result = await axios(url);
-        //setData(result.data);
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (error) {
-        //setIsError(true);
         dispatch({ type: "FETCH_FAILURE" });
       }
-      //setIsLoading(false);
     };
     fetchData();
-  }, [url]); //re-render occurs only when url changes, which is the function passed to the class or component using the hook
+  }, [url]);
 
-  return [state, setUrl]; //return a state and a function to set the variable that re-render depends on (all state variables bundled in state)
+  return [state, setUrl];
 };
 
 const APISearchList = () => {

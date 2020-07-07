@@ -11,6 +11,8 @@ const App = () => (
 );
 
 //Reducer function: a state goes in, actions in combination with old state return a new state
+//In contrast to the hook without using useReducer, state variables become bundled such that impossible combinations of state can not occur
+//basically, the original useState with a variable and setter for each property becomes combined into a useState for a group of properties with a single setter
 const dataFetchReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_INIT": //spread operator with new variable sets cause state merge
@@ -38,7 +40,7 @@ const useDataAPI = (initialUrl, initialData) => {
     isLoading: false,
     isError: false,
     data: initialData,
-  });
+  }); //second argument of useReducer is the initialstate!
 
   useEffect(() => {
     const fetchData = async () => {
