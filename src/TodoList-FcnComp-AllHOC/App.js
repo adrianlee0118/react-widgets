@@ -14,6 +14,7 @@ const todaytodo = [
 ];
 
 const TodoList = ({ todos, isLoadingTodos }) => {
+  /* guard functions now re-written further below as HOCs
   if (isLoadingTodos) {
     return (
       <div>
@@ -28,7 +29,7 @@ const TodoList = ({ todos, isLoadingTodos }) => {
         <p>You have no Todos.</p>
       </div>
     );
-  }
+  }*/
   return (
     <ol>
       {todos.map((todo) => (

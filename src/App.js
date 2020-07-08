@@ -14,21 +14,6 @@ const todaytodo = [
 ];
 
 const TodoList = ({ todos, isLoadingTodos }) => {
-  if (isLoadingTodos) {
-    return (
-      <div>
-        <p>Loading todos...</p>
-      </div>
-    );
-  }
-
-  if (!todos.length) {
-    return (
-      <div>
-        <p>You have no Todos.</p>
-      </div>
-    );
-  }
   return (
     <ol>
       {todos.map((todo) => (
@@ -38,7 +23,7 @@ const TodoList = ({ todos, isLoadingTodos }) => {
   );
 };
 
-//Higher Order Component: Conditional rendering for no input case, return the function that creates conditional render
+//Higher Order Components for conditional renderings
 const withTodosNull = (Component) => (props) =>
   !props.todos ? null : <Component {...props} />;
 
@@ -51,8 +36,6 @@ const withTodosEmpty = (Component) => (props) =>
     <Component {...props} />
   );
 
-//Destructuring used to separate isLoadingTodos from other props, only pass others to render component because it doesn't need to account for isLoadingTodos
-//isLoadingTodos is split out from the props and only used in the HOC
 const withLoadingIndicator = (Component) => ({ isLoadingTodos, ...others }) =>
   isLoadingTodos ? (
     <div>
@@ -62,15 +45,14 @@ const withLoadingIndicator = (Component) => ({ isLoadingTodos, ...others }) =>
     <Component {...others} />
   );
 
+//Composing all HOCs together and wrapping component
 const withConditionalRenderings = compose(
   withLoadingIndicator,
   withTodosNull,
   withTodosEmpty
 );
 
-//TodoList component wrapped with all higher order components for conditional renderings
 const TodoListWithConditionalRendering = withConditionalRenderings(TodoList);
-//const TodoListWithNull = withTodosNull(TodoList);
 
 const App = () => (
   <div>
