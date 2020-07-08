@@ -1,5 +1,6 @@
 //TodoList is a class demonstrating basic if statement guard techniques for condtiional rendering based on inputs
 import React from "react";
+import { compose } from "recompose";
 
 const todaytodo = [
   {
@@ -12,14 +13,7 @@ const todaytodo = [
   },
 ];
 
-const App = () => (
-  <div>
-    <TodoList todos={todaytodo} />
-  </div>
-);
-
-const TodoList = ({ todos }) => {
-  //Content loading guard
+const TodoList = ({ todos, isLoadingTodos }) => {
   if (isLoadingTodos) {
     return (
       <div>
@@ -28,12 +22,6 @@ const TodoList = ({ todos }) => {
     );
   }
 
-  //No input guard
-  if (!todos) {
-    return null;
-  }
-
-  //Input has no data guard
   if (!todos.length) {
     return (
       <div>
@@ -49,6 +37,49 @@ const TodoList = ({ todos }) => {
     </ol>
   );
 };
+
+//Higher Order Component: Conditional rendering for no input case, return the function that creates conditional render
+const withTodosNull = (Component) => (props) =>
+  !props.todos ? null : <Component {...props} />;
+
+const withTodosEmpty = (Component) => (props) =>
+  !props.todos.length ? (
+    <div>
+      <p>You have no Todos.</p>
+    </div>
+  ) : (
+    <Component {...props} />
+  );
+
+//Destructuring used to separate isLoadingTodos from other props, only pass others to render component because it doesn't need to account for isLoadingTodos
+//isLoadingTodos is split out from the props and only used in the HOC
+const withLoadingIndicator = (Component) => ({ isLoadingTodos, ...others }) =>
+  isLoadingTodos ? (
+    <div>
+      <p>Loading todos...</p>
+    </div>
+  ) : (
+    <Component {...others} />
+  );
+
+const withConditionalRenderings = compose(
+  withLoadingIndicator,
+  withTodosNull,
+  withTodosEmpty
+);
+
+//TodoList component wrapped with all higher order components for conditional renderings
+const TodoListWithConditionalRendering = withConditionalRenderings(TodoList);
+//const TodoListWithNull = withTodosNull(TodoList);
+
+const App = () => (
+  <div>
+    <TodoListWithConditionalRendering
+      todos={todaytodo}
+      isLoadingTodos={false}
+    />
+  </div>
+);
 
 const TodoItem = ({ thing }) => {
   return <li>{thing}</li>;
