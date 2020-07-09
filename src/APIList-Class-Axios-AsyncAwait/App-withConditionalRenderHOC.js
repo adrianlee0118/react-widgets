@@ -16,7 +16,6 @@ class APIList extends React.Component {
       error: null,
     };
   }
-
   //Using async/await instead of .then() in the componentDidMount method to fetch data asynchronously using axios
   async componentDidMount() {
     this.setState({ isLoading: true });
@@ -34,26 +33,10 @@ class APIList extends React.Component {
       });
     }
   }
-  /*        //same code without async/await
-  componentDidMount() {
-    axios
-      .get(API + DEFAULT_QUERY)
-      .then((result) =>
-        this.setState({
-          hits: result.data.hits,
-          isLoading: false,
-        })
-      )
-      .catch((error) => this.setState({ error, isLoading: false }));
-  }*/
-
   render() {
-    const { hits, isLoading } = this.state;
-    if (error) return <p>{error.message}</p>; //Conditional render statements if there is an error or if still loading
-    if (isLoading) return <ContentLoader />;
     return (
       <ul>
-        {hits.map((hit) => (
+        {this.state.hits.map((hit) => (
           <li key={hit.objectID}>
             <a href={hit.url}>{hit.title}</a>
           </li>

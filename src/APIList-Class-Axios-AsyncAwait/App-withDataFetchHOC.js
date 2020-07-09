@@ -1,7 +1,5 @@
 import React from "react";
 import axios from "axios";
-import ContentLoader from "react-content-loader";
-import { compose } from "recompose";
 import "./App.css";
 
 const API = "https://hn.algolia.com/api/v1/search?query=";
@@ -14,7 +12,7 @@ const withFetching = (url, query) => (Component) =>
     constructor(props) {
       super(props);
       this.state = {
-        hits: [],
+        hits: null,
         isLoading: false,
         error: null,
       };
@@ -39,46 +37,35 @@ const withFetching = (url, query) => (Component) =>
     }
   };
 
-//Higher order functions for conditional rendering
-const withEither = (conditionalRenderFn, EitherComponent) => (Component) => (
-  props
-) =>
-  conditionalRenderFn(props) ? <EitherComponent /> : <Component {...props} />;
-
-const errorConditionFn = (props) => props.error != null;
-const loadingConditionFn = (props) => props.isLoading;
-const ErrorMessage = () => (
-  <div>
-    <p>Something went wrong...</p>
-  </div>
-);
-const LoadingIndicator = () => <ContentLoader />;
-
-const withConditionalRenderings = compose(
-  withEither(errorConditionFn, ErrorMessage),
-  withEither(loadingConditionFn, LoadingIndicator)
-);
-
 //Base component
-const APIList = ({ hits, others }) => (
-  <ul>
-    {hits.map((hit) => (
-      <li key={hit.objectID}>
-        <a href={hit.url}>{hit.title}</a>
-      </li>
-    ))}
-  </ul>
-);
+const APIList = ({ hits, isLoading, error }) => {
+  if (!hits) {
+    return <p>No data yet ...</p>;
+  }
 
-//Wrapping base component and rendering--add the conditional renderings first
-const APIListWithConditionalRender = withConditionalRenderings(APIList);
-const APIListWithConditionalRenderAndFetch = withFetching(
-  API,
-  DEFAULT_QUERY
-)(APIListWithConditionalRender);
+  if (error) {
+    return <p>{error.message}</p>;
+  }
+
+  if (isLoading) {
+    return <p>Loading ...</p>;
+  }
+  return (
+    <ul>
+      {hits.map((hit) => (
+        <li key={hit.objectID}>
+          <a href={hit.url}>{hit.title}</a>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+//Wrapping base component and rendering
+const APIListWithFetch = withFetching(API, DEFAULT_QUERY)(APIList);
 const App = () => (
   <div>
-    <APIListWithConditionalRenderAndFetch />
+    <APIListWithFetch />
   </div>
 );
 
