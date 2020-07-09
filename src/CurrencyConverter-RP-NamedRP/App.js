@@ -1,18 +1,13 @@
 import React from "react";
 
-//Pass two functions as props, called from within Amount class
+//Without function wrapping, would need to lift state to App so that amount could be passed to Pound and Euro
+//Render Prop function wrapping allows for children arrangement (within divs) to be flexible and for Pound and Euro to be separate from Amount, while amounts can be passed to the function to share state
+//*The render prop function is a prop, and amount is passed from within Amount
 const App = () => (
   <Amount
-    renderAmountOne={(amount) => (
+    render={(amount) => (
       <div>
-        <h2>My One Amount</h2>
-        <Pound amount={amount} />
-        <Euro amount={amount} />
-      </div>
-    )}
-    renderAmountTwo={(amount) => (
-      <div>
-        <h2>My other Amount</h2>
+        <h1>My Currency Converter</h1>
         <Pound amount={amount} />
         <Euro amount={amount} />
       </div>
@@ -39,18 +34,18 @@ class Amount extends React.Component {
     this.setState((state) => ({ amount: state.amount - 1 }));
   };
 
+  //Note children() is a function that was passed as a prop--we pass the state.amount to that function so Pound and Euro, outside of Amount, can render!
   render() {
     return (
       <div>
         <span>US Dollar: {this.state.amount}</span>
-        {this.props.renderAmountTwo(this.state.amount)}
         <button type="button" onClick={this.onIncrement}>
           +
         </button>
         <button type="button" onClick={this.onDecrement}>
           -
         </button>
-        {this.props.renderAmountOne(this.state.amount)}
+        {this.props.render(this.state.amount)}
       </div>
     );
   }
