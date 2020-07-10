@@ -37,12 +37,12 @@ const useHackerNewsAPI = () => {
     fetchData();
   }, [url]); //re-render occurs only when url changes, which is the function passed to the class or component using the hook
 
-  return [{ data, isLoading, isError }, setUrl]; //return a state and a function to set the variable that
+  return [{ data, isLoading, isError }, setUrl]; //return a state and a function to set the variable that render depends on
 };
 
 const APISearchList = () => {
   const [query, setQuery] = useState("redux"); //value of search field
-  const [{ data, isLoading, isError }, doFetch] = useHackerNewsAPI();
+  const [{ data, isLoading, isError }, doFetch] = useHackerNewsAPI(); //Runs data fetching asynchronously and produces variables/function for interacting with that state
 
   return (
     <Fragment>

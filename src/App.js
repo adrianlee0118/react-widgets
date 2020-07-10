@@ -1,60 +1,46 @@
-import React from "react";
-import "./App.css";
-
-class Clicker extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      count: 0,
-    };
-  }
-  OnAdd = () => {
-    this.setState({ count: this.state.count + 1 });
-  };
-  OnSubtract = () => {
-    this.setState({ count: this.state.count - 1 });
-  };
-  OnReset = () => {
-    this.setState({ count: 0 });
-  };
-  render() {
-    return this.props.children(
-      this.state,
-      this.OnAdd,
-      this.OnSubtract,
-      this.OnReset
-    );
-  }
-}
-
-//Counter render prop function uses state provided by Clicker wrapper class
-//State variables passed within curly braces, functions passed inside bracket
-const CounterRP = () => (
-  <Clicker>
-    {({ count }, OnAdd, OnSubtract, OnReset) => {
-      return (
-        <div>
-          <h1>Counter</h1>
-          <div>
-            <button onClick={OnAdd}>+</button>
-            <p>{count}</p>
-            <button onClick={OnSubtract}>-</button>
-          </div>
-          <br />
-          <div>
-            <button onClick={OnReset}>Reset</button>
-          </div>
-        </div>
-      );
-    }}
-  </Clicker>
-);
+import React, { useState, useEffect } from "react";
 
 const App = () => (
   <div>
-    <CounterRP />
+    <Stopwatch />
   </div>
 );
+
+const Stopwatch = () => {
+  const [isOn, setIsOn] = useState(false);
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    let interval;
+    if (isOn) {
+      interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isOn]); //Only re-render if isOn changes
+
+  const onReset = () => {
+    setIsOn(false);
+    setTimer(0);
+  };
+
+  return (
+    <div>
+      {timer}
+      {!isOn && (
+        <button type="button" onClick={() => setIsOn(true)}>
+          Start
+        </button>
+      )}
+      {isOn && (
+        <button type="button" onClick={() => setIsOn(false)}>
+          Stop
+        </button>
+      )}
+      <button type="button" disabled={timer === 0} onClick={onReset}>
+        Reset
+      </button>
+    </div>
+  );
+};
 
 export default App;

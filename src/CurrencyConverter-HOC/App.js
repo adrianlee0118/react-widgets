@@ -13,15 +13,12 @@ const withAmount = (currencyComponents) =>
         amount: 0,
       };
     }
-
     onIncrement = () => {
       this.setState((state) => ({ amount: state.amount + 1 }));
     };
-
     onDecrement = () => {
       this.setState((state) => ({ amount: state.amount - 1 }));
     };
-
     render() {
       return (
         <div>
