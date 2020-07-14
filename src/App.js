@@ -1,97 +1,57 @@
+//TodoList is a class demonstrating basic if statement guard techniques for condtiional rendering based on inputs
 import React from "react";
 
-class StopWatch extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOn: false,
-      timer: 0,
-    };
-  }
-  start = () => {
-    this.setState({ isOn: true });
-    this.timerID = setInterval(
-      () => this.setState({ timer: this.state.timer + 1 }),
-      1000
-    );
-  };
-  stop = () => {
-    this.setState({ isOn: false });
-    clearInterval(this.timerID);
-  };
-  reset = () => {
-    if (this.state.isOn) this.stop();
-    this.setState({ timer: 0 });
-  };
-  render() {
-    return (
-      <div>
-        {this.state.timer}
-        {!this.state.isOn && (
-          <button type="button" onClick={this.start}>
-            Start
-          </button>
-        )}
-        {this.state.isOn && (
-          <button type="button" onClick={this.stop}>
-            Stop
-          </button>
-        )}
-        <button
-          type="button"
-          disabled={this.state.timer === 0}
-          onClick={this.reset}
-        >
-          Reset
-        </button>
-      </div>
-    );
-  }
-}
+const todaytodo = [
+  {
+    id: 1,
+    thing: "Read",
+  },
+  {
+    id: 2,
+    thing: "Exercise",
+  },
+];
 
 const App = () => (
   <div>
-    <StopWatch />
+    <TodoList todos={todaytodo} />
   </div>
 );
 
-/* Function Component with Hooks replaced by class above
-const Stopwatch = () => {
-  const [isOn, setIsOn] = useState(false);
-  const [timer, setTimer] = useState(0);
+const TodoList = ({ todos }) => {
+  //Content loading guard
+  if (isLoadingTodos) {
+    return (
+      <div>
+        <p>Loading todos...</p>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    let interval;
-    if (isOn) {
-      interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isOn]); //Only re-render if isOn changes
+  //No input guard
+  if (!todos) {
+    return null;
+  }
 
-  const onReset = () => {
-    setIsOn(false);
-    setTimer(0);
-  };
-
+  //Input has no data guard
+  if (!todos.length) {
+    return (
+      <div>
+        <p>You have no Todos.</p>
+      </div>
+    );
+  }
   return (
-    <div>
-      {timer}
-      {!isOn && (
-        <button type="button" onClick={() => setIsOn(true)}>
-          Start
-        </button>
-      )}
-      {isOn && (
-        <button type="button" onClick={() => setIsOn(false)}>
-          Stop
-        </button>
-      )}
-      <button type="button" disabled={timer === 0} onClick={onReset}>
-        Reset
-      </button>
-    </div>
+    <ol>
+      {todos.map((todo) => (
+        <TodoItem key={todo.id} thing={todo.thing} />
+      ))}
+    </ol>
   );
 };
-*/
+
+const TodoItem = ({ thing }) => {
+  return <li>{thing}</li>;
+};
 
 export default App;
