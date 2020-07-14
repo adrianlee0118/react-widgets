@@ -9,7 +9,7 @@ class StopWatch extends React.Component {
     };
   }
   start = () => {
-    this.setState({ isOn: true });
+    this.setState({ isOn: true, timer: this.state.timer + 1 });
     this.timerID = setInterval(
       () => this.setState({ timer: this.state.timer + 1 }),
       1000
