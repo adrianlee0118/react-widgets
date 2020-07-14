@@ -1,11 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+
+class StopWatch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOn: false,
+      timer: 0,
+    };
+  }
+  start = () => {
+    this.setState({ isOn: true });
+    this.timerID = setInterval(
+      () => this.setState({ timer: this.state.timer + 1 }),
+      1000
+    );
+  };
+  stop = () => {
+    this.setState({ isOn: false });
+    clearInterval(this.timerID);
+  };
+  reset = () => {
+    if (this.state.isOn) this.stop();
+    this.setState({ timer: 0 });
+  };
+  render() {
+    return (
+      <div>
+        {this.state.timer}
+        {!this.state.isOn && (
+          <button type="button" onClick={this.start}>
+            Start
+          </button>
+        )}
+        {this.state.isOn && (
+          <button type="button" onClick={this.stop}>
+            Stop
+          </button>
+        )}
+        <button
+          type="button"
+          disabled={this.state.timer === 0}
+          onClick={this.reset}
+        >
+          Reset
+        </button>
+      </div>
+    );
+  }
+}
 
 const App = () => (
   <div>
-    <Stopwatch />
+    <StopWatch />
   </div>
 );
 
+/* Function Component with Hooks replaced by class above
 const Stopwatch = () => {
   const [isOn, setIsOn] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -42,5 +92,6 @@ const Stopwatch = () => {
     </div>
   );
 };
+*/
 
 export default App;
