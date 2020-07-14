@@ -1,5 +1,6 @@
 //TodoList is a class demonstrating basic if statement guard techniques for condtiional rendering based on inputs
 import React from "react";
+import { compose } from "recompose";
 
 const todaytodo = [
   {
@@ -12,17 +13,36 @@ const todaytodo = [
   },
 ];
 
+const withEither = (conditionFn, EitherComp) => (Comp) => (props) =>
+  conditionFn(props) ? <EitherComp /> : <Comp {...props} />;
+const NoTodosCondn = (props) => !props.todos.length;
+const NoTodosComp = () => (
+  <div>
+    <p>You have no todos.</p>
+  </div>
+);
+const withNoTodos = withEither(NoTodosCondn, NoTodosComp);
+const NoDataCondn = (props) => !props.todos;
+const NoDataComp = () => (
+  <div>
+    <p>Something went wrong...</p>
+  </div>
+);
+const withNoData = withEither(NoDataCondn, NoDataComp);
+
+const withConditionalRenderings = compose(withNoTodos, withNoData);
+
 class TodoList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: this.props.todos,
+      todos: this.props.todos,
     };
   }
   render() {
     return (
       <ol>
-        {this.state.list.map((todo) => (
+        {this.state.todos.map((todo) => (
           <TodoItem key={todo.id} thing={todo.thing} />
         ))}
       </ol>
@@ -30,45 +50,13 @@ class TodoList extends React.Component {
   }
 }
 
+const EnhancedTodoList = withConditionalRenderings(TodoList);
+
 const App = () => (
   <div>
-    <TodoList todos={todaytodo} />
+    <EnhancedTodoList todos={todaytodo} />
   </div>
 );
-
-/*
-const TodoList = ({ todos }) => {
-  //Content loading guard
-  if (isLoadingTodos) {
-    return (
-      <div>
-        <p>Loading todos...</p>
-      </div>
-    );
-  }
-
-  //No input guard
-  if (!todos) {
-    return null;
-  }
-
-  //Input has no data guard
-  if (!todos.length) {
-    return (
-      <div>
-        <p>You have no Todos.</p>
-      </div>
-    );
-  }
-  return (
-    <ol>
-      {todos.map((todo) => (
-        <TodoItem key={todo.id} thing={todo.thing} />
-      ))}
-    </ol>
-  );
-};
-*/
 
 const TodoItem = ({ thing }) => {
   return <li>{thing}</li>;
