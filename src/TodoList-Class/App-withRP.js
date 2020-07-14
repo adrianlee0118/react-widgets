@@ -1,4 +1,4 @@
-//NEXT: RENDER PROPS then tictactoe mods, then userReducer with all FcnComps then Invoice Editor w/o material-ui : class, fcncomp, usereducer hooks, react-redux
+//NEXT: tictactoe mods, then userReducer with all FcnComps then Invoice Editor w/o material-ui : class, fcncomp, usereducer hooks, react-redux
 import React from "react";
 
 const todaytodo = [
