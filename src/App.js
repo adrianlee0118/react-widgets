@@ -16,35 +16,45 @@ const UserList = () => {
   const handleAddUser = () => {
     setUsers(users.concat({ id: uuidv4(), name: text }));
   };
+  const handleRemove = (id) => {
+    setUsers(users.filter((user) => user.id !== id));
+  };
   return (
     <div>
       <input type="text" value={text} onChange={handleText} />
       <button type="button" onClick={handleAddUser}>
         Add User
       </button>
-      <List list={users} />
+      <List list={users} onRemove={handleRemove} />
     </div>
   );
 };
 
 //React memo prevents List from re-rendering when the input field's contents are changed
 //Only UserList will re-render, not the List component
-const List = memo(({ list }) => {
+const List = memo(({ list, onRemove }) => {
   console.log("Render: List");
   return (
     <ul>
-      {list.map((item) => {
-        <ListItem key={item.id} item={item} />;
-      })}
+      {list.map((item) => (
+        <ListItem key={item.id} item={item} onRemove={onRemove} />
+      ))}
     </ul>
   );
 });
 
 //React memo again prevents ListItems from re-rendering if unnecessary by i.e. simply changing content of input field
 //When characters are added to input field, only the App component re-renders, not List and ListItems
-const ListItem = memo(({ item }) => {
+const ListItem = memo(({ item, onRemove }) => {
   console.log("Render: ListItem");
-  return <li>{item.name}</li>;
+  return (
+    <li>
+      {item.name}
+      <button type="button" onClick={() => onRemove(item.id)}>
+        Remove
+      </button>
+    </li>
+  );
 });
 
 const App = () => (

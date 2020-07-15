@@ -33,9 +33,9 @@ const List = memo(({ list }) => {
   console.log("Render: List");
   return (
     <ul>
-      {list.map((item) => {
-        <ListItem key={item.id} item={item} />;
-      })}
+      {list.map((item) => (
+        <ListItem key={item.id} item={item} />
+      ))}
     </ul>
   );
 });
