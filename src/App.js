@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 
 const INITIAL_LIST = [
   {
@@ -19,11 +19,22 @@ const App = () => (
   </div>
 );
 
+const listReducer = (state, action) => {
+  switch (action.type) {
+    case "REMOVE_ITEM":
+      return state.filter((item) => item.id !== action.id);
+    default:
+      throw new Error();
+  }
+};
+
 const List = ({ listinit }) => {
-  const [list, setList] = useState(listinit);
+  //const [list, setList] = useState(listinit);
+  const [list, dispatch] = useReducer(listReducer, INITIAL_LIST); //Use reducer to manage state, but establish initial state in the component
   const onRemoveItem = (id) => {
-    const newList = list.filter((item) => item.id !== id);
-    setList(newList);
+    //const newList = list.filter((item) => item.id !== id);
+    //setList(newList);
+    dispatch({ type: "REMOVE_ITEM", id: id });
   };
   return (
     <ul>

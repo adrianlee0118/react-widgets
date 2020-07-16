@@ -15,22 +15,22 @@ const INITIAL_LIST = [
 
 const App = () => (
   <div>
-    <List />
+    <List listinit={INITIAL_LIST} />
   </div>
 );
 
 const listReducer = (state, action) => {
   switch (action.type) {
     case "REMOVE_ITEM":
-      return state.filter((item) => item.id !== action.id); //filter state directly because the state is the list--if state is many components, we would call .componentname to state
+      return state.filter((item) => item.id !== action.id);
     default:
       throw new Error();
   }
 };
 
-const List = () => {
-  //const [list, setList] = useState(INITIAL_LIST);
-  const [list, dispatch] = useReducer(listReducer, INITIAL_LIST);
+const List = ({ listinit }) => {
+  //const [list, setList] = useState(listinit);
+  const [list, dispatch] = useReducer(listReducer, INITIAL_LIST); //Use reducer to manage state, but establish initial state in the component
   const onRemoveItem = (id) => {
     //const newList = list.filter((item) => item.id !== id);
     //setList(newList);
@@ -49,5 +49,35 @@ const List = () => {
     </ul>
   );
 };
+
+/*
+class List extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      list: this.props.listinit,
+    };
+  }
+  onRemoveItem = (id) => {
+    this.setState({
+      list: this.state.list.filter((item) => item.id !== id),
+    });
+  };
+  render() {
+    return (
+      <ul>
+        {this.state.list.map((item) => (
+          <li key={item.id}>
+            <a href={item.url}>{item.title}</a>
+            <button type="button" onClick={() => this.onRemoveItem(item.id)}>
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+}
+*/
 
 export default App;
