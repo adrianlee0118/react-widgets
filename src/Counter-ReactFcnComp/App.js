@@ -7,9 +7,6 @@ const App = () => (
   </div>
 );
 
-//Notes:
-//useState allows function component to have state
-//Wrap onclick in arrow function to prevent excessive re-render
 const Counter = () => {
   const [count, setCount] = useState(0);
   return (
@@ -27,5 +24,46 @@ const Counter = () => {
     </div>
   );
 };
+
+/* Class replaced by simpler function component above
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      count: 0,
+    };
+  }
+
+  OnAdd = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  OnSubtract = () => {
+    this.setState({ count: this.state.count - 1 });
+  };
+
+  OnReset = () => {
+    this.setState({ count: 0 });
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Counter</h1>
+        <div>
+          <button onClick={this.OnAdd}>+</button>
+          <p>{this.state.count}</p>
+          <button onClick={this.OnSubtract}>-</button>
+        </div>
+        <br />
+        <div>
+          <button onClick={this.OnReset}>Reset</button>
+        </div>
+      </div>
+    );
+  }
+}
+*/
 
 export default App;
