@@ -1,69 +1,69 @@
 import React, { useState } from "react";
 
-//Without function wrapping, would need to lift state to App so that amount could be passed to Pound and Euro
-//Render Prop function wrapping allows for children arrangement (within divs) to be flexible and for Pound and Euro to be separate from Amount, while amounts can be passed to the function to share state
-//*The render prop function is a prop, and amount is passed from within Amount
+const INITIAL_LIST = [
+  {
+    id: "0",
+    title: "React with RxJS for State Management Tutorial",
+    url: "https://www.robinwieruch.de/react-rxjs-state-management-tutorial/",
+  },
+  {
+    id: "1",
+    title: "React with Apollo and GraphQL Tutorial",
+    url: "https://www.robinwieruch.de/react-graphql-apollo-tutorial",
+  },
+];
+
 const App = () => (
-  <Amount>
-    {(amount) => (
-      <div>
-        <h1>My Currency Converter</h1>
-        <Pound amount={amount} />
-        <Euro amount={amount} />
-      </div>
-    )}
-  </Amount>
+  <div>
+    <List listinit={INITIAL_LIST} />
+  </div>
 );
 
-const Euro = ({ amount }) => <p>Euro: {amount * 0.86}</p>;
-const Pound = ({ amount }) => <p>Pound: {amount * 0.76}</p>;
-
-const Amount = ({ children }) => {
-  const [amount, setAmount] = useState(0);
+const List = ({ listinit }) => {
+  const [list, setList] = useState(listinit);
+  const onRemoveItem = (id) => {
+    const newList = list.filter((item) => item.id !== id);
+    setList(newList);
+  };
   return (
-    <div>
-      <span>US Dollar: {amount}</span>
-      <button type="button" onClick={() => setAmount(amount + 1)}>
-        +
-      </button>
-      <button type="button" onClick={() => setAmount(amount - 1)}>
-        -
-      </button>
-      {children(amount)}
-    </div>
+    <ul>
+      {list.map((item) => (
+        <li key={item.id}>
+          <a href={item.url}>{item.title}</a>
+          <button type="button" onClick={() => onRemoveItem(item.id)}>
+            Remove
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 };
 
 /*
-class Amount extends React.Component {
+class List extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      amount: 0,
+      list: this.props.listinit,
     };
   }
-
-  onIncrement = () => {
-    this.setState((state) => ({ amount: state.amount + 1 }));
+  onRemoveItem = (id) => {
+    this.setState({
+      list: this.state.list.filter((item) => item.id !== id),
+    });
   };
-
-  onDecrement = () => {
-    this.setState((state) => ({ amount: state.amount - 1 }));
-  };
-
-  //Note children() is a function that was passed as a prop--we pass the state.amount to that function so Pound and Euro, outside of Amount, can render!
   render() {
     return (
-      <div>
-        <span>US Dollar: {this.state.amount}</span>
-        <button type="button" onClick={this.onIncrement}>
-          +
-        </button>
-        <button type="button" onClick={this.onDecrement}>
-          -
-        </button>
-        {this.props.children(this.state.amount)}
-      </div>
+      <ul>
+        {this.state.list.map((item) => (
+          <li key={item.id}>
+            <a href={item.url}>{item.title}</a>
+            <button type="button" onClick={() => this.onRemoveItem(item.id)}>
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
     );
   }
 }
