@@ -1,44 +1,23 @@
 import React, { useEffect, useReducer } from "react";
 
-const App = () => (
-  <div>
-    <Stopwatch />
-  </div>
-);
-
 const stopwatchReducer = (state, action) => {
   switch (action.type) {
     case "START":
-      return {
-        ...state,
-        isOn: true,
-      };
+      return { ...state, isOn: true };
     case "TICK":
-      return {
-        ...state,
-        timer: state.timer + 1,
-      };
+      return { ...state, timer: state.timer + 1 };
     case "STOP":
-      return {
-        ...state,
-        isOn: false,
-      };
+      return { ...state, isOn: false };
     case "RESET":
-      return {
-        ...state,
-        isOn: false,
-        timer: 0,
-      };
+      return { ...state, isOn: false, timer: 0 };
     default:
       throw new Error();
   }
 };
 
-const Stopwatch = () => {
-  /*  //ison and timer logic bundled into the reducer so that we can't have impossible states
-  const [isOn, setIsOn] = useState(false);
-  const [timer, setTimer] = useState(0);
-  */
+const StopWatch = () => {
+  //const [isOn, setIsOn] = useState(false);
+  //const [timer, setTimer] = useState(0);
   const [state, dispatch] = useReducer(stopwatchReducer, {
     isOn: false,
     timer: 0,
@@ -50,7 +29,12 @@ const Stopwatch = () => {
       interval = setInterval(() => dispatch({ type: "TICK" }), 1000);
     }
     return () => clearInterval(interval);
-  }, [state.isOn]); //Only re-render if isOn changes
+  }, [state.isOn]); //useEffect gets toggled by toggling the isOn variable
+
+  /*const onReset = () => {
+    setIsOn(false);
+    setTimer(0);
+  };*/
 
   return (
     <div>
@@ -75,5 +59,62 @@ const Stopwatch = () => {
     </div>
   );
 };
+
+/*   class replaced by function component above
+class StopWatch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOn: false,
+      timer: 0,
+    };
+  }
+  start = () => {
+    this.setState({ isOn: true, timer: this.state.timer + 1 });
+    this.timerID = setInterval(
+      () => this.setState({ timer: this.state.timer + 1 }),
+      1000
+    );
+  };
+  stop = () => {
+    this.setState({ isOn: false });
+    clearInterval(this.timerID);
+  };
+  reset = () => {
+    if (this.state.isOn) this.stop();
+    this.setState({ timer: 0 });
+  };
+  render() {
+    return (
+      <div>
+        {this.state.timer}
+        {!this.state.isOn && (
+          <button type="button" onClick={this.start}>
+            Start
+          </button>
+        )}
+        {this.state.isOn && (
+          <button type="button" onClick={this.stop}>
+            Stop
+          </button>
+        )}
+        <button
+          type="button"
+          disabled={this.state.timer === 0}
+          onClick={this.reset}
+        >
+          Reset
+        </button>
+      </div>
+    );
+  }
+}
+*/
+
+const App = () => (
+  <div>
+    <StopWatch />
+  </div>
+);
 
 export default App;
