@@ -1,8 +1,41 @@
 //NEXT: tictactoe mods, then userReducer with all FcnComps then Invoice Editor w/o material-ui : class, fcncomp, usereducer hooks, react-redux
 //Using React's MEMO API to optimize render by preventing default unnecessary re-renders of components that haven't changed
-import React, { memo } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { memo, useState } from "react";
+import { v4 as uuidv4 } from "uuid"; //generates id keys
 
+const UserList = () => {
+  console.log("Render: UserList");
+  const [users, setUsers] = useState([
+    { id: "a", name: "Robin" },
+    { id: "b", name: "Dennis" },
+  ]);
+  const [text, setText] = useState("");
+
+  const handleText = (event) => {
+    setText(event.target.value);
+  };
+
+  const handleAddUser = () => {
+    //setUsers(users.concat({ id: uuidv4(), name: text }));
+    setUsers([...users, { id: uuidv4(), name: text }]);
+  };
+
+  const handleRemove = (id) => {
+    setUsers(users.filter((user) => user.id !== id));
+  };
+
+  return (
+    <div>
+      <input type="text" value={text} onChange={handleText} />
+      <button type="button" onClick={handleAddUser}>
+        Add User
+      </button>
+      <List list={users} onRemove={handleRemove} />
+    </div>
+  );
+};
+
+/*  Class replaced by Function component above
 class UserList extends React.Component {
   constructor(props) {
     super(props);
@@ -39,35 +72,6 @@ class UserList extends React.Component {
     );
   }
 }
-
-/* Function component with hooks replaced by class above
-const UserList = () => {
-  console.log("Render: App");
-  const [users, setUsers] = useState([
-    { id: "a", name: "Robin" },
-    { id: "b", name: "Dennis" },
-  ]);
-  const [text, setText] = useState("");
-  const handleText = (event) => {
-    setText(event.target.value);
-  };
-  const handleAddUser = () => {
-    setUsers(users.concat({ id: uuidv4(), name: text }));
-  };
-  //useCallback to memoize a function so that it only gets re-defined when dependencies ([users]) change rather than on every change to input
-  const handleRemove = useCallback(
-    (id) => (setUsers(users.filter((user) => user.id !== id)), [users])
-  );
-  return (
-    <div>
-      <input type="text" value={text} onChange={handleText} />
-      <button type="button" onClick={handleAddUser}>
-        Add User
-      </button>
-      <List list={users} onRemove={handleRemove} />
-    </div>
-  );
-};
 */
 
 //React memo prevents List from re-rendering when the input field's contents are changed
