@@ -17,7 +17,8 @@ const UserList = () => {
   };
   //useCallback to memoize a function so that it only gets re-defined when dependencies ([users]) change rather than on every change to input field
   const handleRemove = useCallback(
-    (id) => (setUsers(users.filter((user) => user.id !== id)), [users])
+    (id) => setUsers(users.filter((user) => user.id !== id)),
+    [users]
   );
   return (
     <div>
