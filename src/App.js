@@ -1,83 +1,97 @@
-import React, { useReducer } from "react";
+import React, { useState, useEffect } from "react";
 
-const INITIAL_LIST = [
-  {
-    id: "0",
-    title: "React with RxJS for State Management Tutorial",
-    url: "https://www.robinwieruch.de/react-rxjs-state-management-tutorial/",
-  },
-  {
-    id: "1",
-    title: "React with Apollo and GraphQL Tutorial",
-    url: "https://www.robinwieruch.de/react-graphql-apollo-tutorial",
-  },
-];
+const StopWatch = () => {
+  const [isOn, setIsOn] = useState(false);
+  const [timer, setTimer] = useState(0);
 
-const App = () => (
-  <div>
-    <List listinit={INITIAL_LIST} />
-  </div>
-);
+  useEffect(() => {
+    let interval;
+    if (isOn) {
+      interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isOn]); //useEffect gets toggled by toggling the isOn variable
 
-const listReducer = (state, action) => {
-  switch (action.type) {
-    case "REMOVE_ITEM":
-      return state.filter((item) => item.id !== action.id);
-    default:
-      throw new Error();
-  }
-};
-
-const List = ({ listinit }) => {
-  //const [list, setList] = useState(listinit);
-  const [list, dispatch] = useReducer(listReducer, INITIAL_LIST); //Use reducer to manage state, but establish initial state in the component
-  const onRemoveItem = (id) => {
-    //const newList = list.filter((item) => item.id !== id);
-    //setList(newList);
-    dispatch({ type: "REMOVE_ITEM", id: id });
+  const onReset = () => {
+    setIsOn(false);
+    setTimer(0);
   };
+
   return (
-    <ul>
-      {list.map((item) => (
-        <li key={item.id}>
-          <a href={item.url}>{item.title}</a>
-          <button type="button" onClick={() => onRemoveItem(item.id)}>
-            Remove
-          </button>
-        </li>
-      ))}
-    </ul>
+    <div>
+      {timer}
+      {!isOn && (
+        <button type="button" onClick={() => setIsOn(true)}>
+          Start
+        </button>
+      )}
+      {isOn && (
+        <button type="button" onClick={() => setIsOn(false)}>
+          Stop
+        </button>
+      )}
+      <button type="button" disabled={timer === 0} onClick={onReset}>
+        Reset
+      </button>
+    </div>
   );
 };
 
-/*
-class List extends React.Component {
+/*   class replaced by function component above
+class StopWatch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: this.props.listinit,
+      isOn: false,
+      timer: 0,
     };
   }
-  onRemoveItem = (id) => {
-    this.setState({
-      list: this.state.list.filter((item) => item.id !== id),
-    });
+  start = () => {
+    this.setState({ isOn: true, timer: this.state.timer + 1 });
+    this.timerID = setInterval(
+      () => this.setState({ timer: this.state.timer + 1 }),
+      1000
+    );
+  };
+  stop = () => {
+    this.setState({ isOn: false });
+    clearInterval(this.timerID);
+  };
+  reset = () => {
+    if (this.state.isOn) this.stop();
+    this.setState({ timer: 0 });
   };
   render() {
     return (
-      <ul>
-        {this.state.list.map((item) => (
-          <li key={item.id}>
-            <a href={item.url}>{item.title}</a>
-            <button type="button" onClick={() => this.onRemoveItem(item.id)}>
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div>
+        {this.state.timer}
+        {!this.state.isOn && (
+          <button type="button" onClick={this.start}>
+            Start
+          </button>
+        )}
+        {this.state.isOn && (
+          <button type="button" onClick={this.stop}>
+            Stop
+          </button>
+        )}
+        <button
+          type="button"
+          disabled={this.state.timer === 0}
+          onClick={this.reset}
+        >
+          Reset
+        </button>
+      </div>
     );
   }
 }
 */
+
+const App = () => (
+  <div>
+    <StopWatch />
+  </div>
+);
 
 export default App;
