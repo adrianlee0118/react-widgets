@@ -1,97 +1,106 @@
-import React from "react";
+//NEXT: tictactoe mods, then userReducer with all FcnComps then Invoice Editor w/o material-ui : class, fcncomp, usereducer hooks, react-redux
+//Using React's MEMO API to optimize render by preventing default unnecessary re-renders of components that haven't changed
+import React, { memo } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-class StopWatch extends React.Component {
+class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOn: false,
-      timer: 0,
+      users: [
+        { id: "a", name: "Robin" },
+        { id: "b", name: "Dennis" },
+      ],
+      text: "",
     };
   }
-  start = () => {
-    this.setState({ isOn: true, timer: this.state.timer + 1 });
-    this.timerID = setInterval(
-      () => this.setState({ timer: this.state.timer + 1 }),
-      1000
-    );
+  handleText = (event) => {
+    this.setState({ text: event.target.value });
   };
-  stop = () => {
-    this.setState({ isOn: false });
-    clearInterval(this.timerID);
+  handleAddUser = () => {
+    this.setState({
+      users: [...this.state.users, { id: uuidv4(), name: this.state.text }],
+    });
   };
-  reset = () => {
-    if (this.state.isOn) this.stop();
-    this.setState({ timer: 0 });
+  handleRemove = (id) => {
+    this.setState({
+      users: this.state.users.filter((user) => user.id !== id),
+    });
   };
   render() {
     return (
       <div>
-        {this.state.timer}
-        {!this.state.isOn && (
-          <button type="button" onClick={this.start}>
-            Start
-          </button>
-        )}
-        {this.state.isOn && (
-          <button type="button" onClick={this.stop}>
-            Stop
-          </button>
-        )}
-        <button
-          type="button"
-          disabled={this.state.timer === 0}
-          onClick={this.reset}
-        >
-          Reset
+        <input type="text" value={this.state.text} onChange={this.handleText} />
+        <button type="button" onClick={this.handleAddUser}>
+          Add User
         </button>
+        <List list={this.state.users} onRemove={this.handleRemove} />
       </div>
     );
   }
 }
 
-const App = () => (
-  <div>
-    <StopWatch />
-  </div>
-);
-
-/* Function Component with Hooks replaced by class above
-const Stopwatch = () => {
-  const [isOn, setIsOn] = useState(false);
-  const [timer, setTimer] = useState(0);
-
-  useEffect(() => {
-    let interval;
-    if (isOn) {
-      interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isOn]); //Only re-render if isOn changes
-
-  const onReset = () => {
-    setIsOn(false);
-    setTimer(0);
+/* Function component with hooks replaced by class above
+const UserList = () => {
+  console.log("Render: App");
+  const [users, setUsers] = useState([
+    { id: "a", name: "Robin" },
+    { id: "b", name: "Dennis" },
+  ]);
+  const [text, setText] = useState("");
+  const handleText = (event) => {
+    setText(event.target.value);
   };
-
+  const handleAddUser = () => {
+    setUsers(users.concat({ id: uuidv4(), name: text }));
+  };
+  //useCallback to memoize a function so that it only gets re-defined when dependencies ([users]) change rather than on every change to input
+  const handleRemove = useCallback(
+    (id) => (setUsers(users.filter((user) => user.id !== id)), [users])
+  );
   return (
     <div>
-      {timer}
-      {!isOn && (
-        <button type="button" onClick={() => setIsOn(true)}>
-          Start
-        </button>
-      )}
-      {isOn && (
-        <button type="button" onClick={() => setIsOn(false)}>
-          Stop
-        </button>
-      )}
-      <button type="button" disabled={timer === 0} onClick={onReset}>
-        Reset
+      <input type="text" value={text} onChange={handleText} />
+      <button type="button" onClick={handleAddUser}>
+        Add User
       </button>
+      <List list={users} onRemove={handleRemove} />
     </div>
   );
 };
 */
+
+//React memo prevents List from re-rendering when the input field's contents are changed
+//Only UserList will re-render, not the List component
+const List = memo(({ list, onRemove }) => {
+  console.log("Render: List");
+  return (
+    <ul>
+      {list.map((item) => (
+        <ListItem key={item.id} item={item} onRemove={onRemove} />
+      ))}
+    </ul>
+  );
+});
+
+//React memo again prevents ListItems from re-rendering if unnecessary by i.e. simply changing content of input field
+//When characters are added to input field, only the App component re-renders, not List and ListItems
+const ListItem = memo(({ item, onRemove }) => {
+  console.log("Render: ListItem");
+  return (
+    <li>
+      {item.name}
+      <button type="button" onClick={() => onRemove(item.id)}>
+        Remove
+      </button>
+    </li>
+  );
+});
+
+const App = () => (
+  <div>
+    <UserList />
+  </div>
+);
 
 export default App;
