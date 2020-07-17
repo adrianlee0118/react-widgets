@@ -1,4 +1,3 @@
-//Add HOCs and RP
 import React from "react";
 
 class StopWatch extends React.Component {
