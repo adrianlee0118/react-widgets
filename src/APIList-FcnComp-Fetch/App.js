@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
-import axios from "axios";
 import "./App.css";
 
 const API = "https://hn.algolia.com/api/v1/search?query=";
@@ -17,20 +16,17 @@ const APIList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
 
-      try {
-        const result = await axios(API + DEFAULT_QUERY);
-        setHits(result.data.hits);
-      } catch (error) {
-        setError(error);
-      }
+    fetch(API + DEFAULT_QUERY)
+      .then((response) => {
+        if (response.ok) return response.json();
+        else setError(new Error());
+      })
+      .then((data) => setHits(data.hits))
+      .catch((error) => this.setError(error));
 
-      setIsLoading(false);
-    };
-    fetchData();
+    setIsLoading(false);
   }, []);
   return (
     <Fragment>
@@ -60,20 +56,15 @@ class APIList extends React.Component {
       error: null,
     };
   }
-  async componentDidMount() {
+  componentDidMount() {
     this.setState({ isLoading: true });
-    try {
-      const result = await axios.get(API + DEFAULT_QUERY);
-      this.setState({
-        hits: result.data.hits,
-        isLoading: false,
-      });
-    } catch (error) {
-      this.setState({
-        error,
-        isLoading: false,
-      });
-    }
+    fetch(API + DEFAULT_QUERY)
+      .then((response) => {
+        if (response.ok) return response.json();
+        else throw new Error("Something went wrong...");
+      })
+      .then((data) => this.setState({ hits: data.hits, isLoading: false }))
+      .catch((error) => this.setState({ error, isLoading: false }));
   }
   render() {
     const { hits, isLoading } = this.state;
