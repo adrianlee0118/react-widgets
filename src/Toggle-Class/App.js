@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 
 const App = () => (
@@ -7,16 +7,6 @@ const App = () => (
   </div>
 );
 
-const Toggle = () => {
-  const [isToggleOn, setIsToggleOn] = useState(true);
-  return (
-    <button onClick={() => setIsToggleOn(!isToggleOn)}>
-      {isToggleOn ? "ON" : "OFF"}
-    </button>
-  );
-};
-
-/*
 class Toggle extends React.Component {
   constructor(props) {
     super(props);
@@ -33,6 +23,5 @@ class Toggle extends React.Component {
     );
   }
 }
-*/
 
 export default App;
