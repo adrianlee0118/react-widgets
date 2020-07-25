@@ -25,8 +25,8 @@ class BlurExample extends React.Component {
     }));
   }
 
-  //Close popover every second.
-  //Makes sure no child element is already in focus--if it is, blur.
+  //Periodically ensure popover is closed.
+  //Pass this function to onBlur to ensure that popovers for non-focused elements are always closed regardless of keyboard or mouse use.
   onBlurHandler() {
     this.timeOutId = setTimeout(() => {
       this.setState({
